@@ -1,4 +1,4 @@
-package com.wiser.edittextspace
+package com.ks.picturebooks.login.weight
 
 import android.content.Context
 import android.text.*
@@ -10,12 +10,14 @@ import java.util.regex.Pattern
 /**
  * @author Wiser
  *
- *      手机号输入格式化130 1234 4567
+ * 手机号输入格式化130 1234 4567
  */
 class MobileNumEditSpaceView(context: Context, attrs: AttributeSet?) :
     AppCompatEditText(context, attrs) {
 
     private var lastTextLength: Long? = 0
+
+    private var onEditTextInputListener: OnEditTextInputListener? = null
 
     init {
 
@@ -34,6 +36,7 @@ class MobileNumEditSpaceView(context: Context, attrs: AttributeSet?) :
                     lastTextLength?.let { l ->
                         if (t.toLong() < l) {
                             lastTextLength = t.toLong()
+                            onEditTextInputListener?.afterTextChanged(s)
                             return
                         }
                     }
@@ -44,13 +47,15 @@ class MobileNumEditSpaceView(context: Context, attrs: AttributeSet?) :
                 s?.length?.let {
                     lastTextLength = it.toLong()
                 }
+                onEditTextInputListener?.afterTextChanged(s)
             }
 
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                onEditTextInputListener?.beforeTextChanged(p0, p1, p2, p3)
             }
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
+                onEditTextInputListener?.onTextChanged(p0, p1, p2, p3)
             }
         })
     }
@@ -65,6 +70,10 @@ class MobileNumEditSpaceView(context: Context, attrs: AttributeSet?) :
      */
     fun getFormatMobileNumText(): String = text.toString()
 
+    fun realLength(): Int = getRealMobileNumText().length
+
+    fun formatLength(): Int = getFormatMobileNumText().length
+
     /**
      * 去掉空格
      * @param s
@@ -76,4 +85,15 @@ class MobileNumEditSpaceView(context: Context, attrs: AttributeSet?) :
         val m = p.matcher(s)
         return m.replaceAll("");
     }
+
+    fun addEditTextInputListener(onEditTextInputListener: OnEditTextInputListener?) {
+        this.onEditTextInputListener = onEditTextInputListener
+    }
+
+}
+
+interface OnEditTextInputListener {
+    fun afterTextChanged(s: Editable?)
+    fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int)
+    fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int)
 }
