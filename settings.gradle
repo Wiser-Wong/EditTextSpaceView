@@ -1,0 +1,3 @@
+include ':editTextSpace'
+include ':app'
+rootProject.name = "EditTextSpaceView"
