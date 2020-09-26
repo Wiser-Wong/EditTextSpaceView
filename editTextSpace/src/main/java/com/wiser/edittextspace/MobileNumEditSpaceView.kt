@@ -1,4 +1,4 @@
-package com.ks.picturebooks.login.weight
+package com.wiser.edittextspace
 
 import android.content.Context
 import android.text.*
